@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicar Atividade - StudyTask</title>
+    <style>
+        body {
+            background-color: #14171a;
+            color: #fff;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+        .header {
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            background-color: #1a1b1d;
+            border-bottom: 1px solid #38444d;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .container {
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #1a1b1d;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            margin-top: 20px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        p {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            resize: none;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .plus-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #1da1f2;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin: 10px auto;
+            transition: background-color 0.3s;
+            font-size: 24px;
+        }
+        .plus-circle:hover {
+            background-color: #0d95e8;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #1da1f2;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0d95e8;
+        }
+        .preview {
+            margin: 10px 0;
+            text-align: center;
+        }
+        .preview img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+        .post {
+            background-color: #2a2a2a;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .post-header span {
+            font-weight: bold;
+        }
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .action-btn {
+            background-color: transparent;
+            border: none;
+            color: #1da1f2;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .action-btn:hover {
+            color: #0d95e8;
+        }
+        .comment-section {
+            margin-top: 10px;
+        }
+        .comment {
+            background-color: #3a3b3c;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        /* Estilos do Modal */
+        .modal {
+            display: none; /* Oculta o modal por padrão */
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+        }
+        .modal-content {
+            background-color: #1e1e1e;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>StudyTask</h1>
+    </div>
+    <div class="container">
+        <h2>Publicar Atividade</h2>
+        <p>Usuário: <strong>@Luan_Silva</strong></p>
+        <p>Siga os passos abaixo para publicar sua atividade:</p>
+        <ol>
+            <li>Digite o texto que descreve sua atividade no campo abaixo.</li>
+            <li>Se desejar, clique no ícone "+" para adicionar uma imagem da sua galeria.</li>
+            <li>Depois de adicionar a imagem (opcional), clique em "Publicar" para enviar sua atividade.</li>
+        </ol>
+        
+        <textarea id="postContent" placeholder="Descreva sua atividade..."></textarea>
+        <div class="plus-circle" onclick="document.getElementById('fileInput').click()">+</div>
+        <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="previewImage(event)">
+        <div id="preview" class="preview"></div>
+        <button onclick="publishPost()">Publicar</button>
+        
+        <div id="posts"></div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p id="modalMessage"></p>
+        </div>
+    </div>
+
+    <!-- Scripts do Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "SUA_API_KEY",
+            authDomain: "SEU_AUTH_DOMAIN",
+            databaseURL: "SEU_DATABASE_URL",
+            projectId: "SEU_PROJECT_ID",
+            storageBucket: "SEU_STORAGE_BUCKET",
+            messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+            appId: "SEU_APP_ID"
+        };
+
+        // Inicializa o Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const storage = firebase.storage();
+
+        // Pré-visualizar imagem
+        function previewImage(event) {
+            const previewContainer = document.getElementById('preview');
+            previewContainer.innerHTML = ""; // Limpa a pré-visualização anterior
+            const file = event.target.files[0];
+            if (file) {
+                const imgElement = document.createElement('img');
+                imgElement.src = URL.createObjectURL(file);
+                previewContainer.appendChild(imgElement);
+                showModal('Imagem adicionada com sucesso!');
+            }
+        }
+
+        // Mostrar modal
+        function showModal(message) {
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('modal').style.display = "block";
+        }
+
+        // Fechar modal
+        function closeModal() {
+            document.getElementById('modal').style.display = "none";
+        }
+
+        // Publicar uma atividade
+        async function publishPost() {
+            const content = document.getElementById('postContent').value;
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            if (content.trim() === "" && !file) {
+                showModal('Por favor, adicione texto ou uma imagem antes de publicar.');
+                return;
+            }
+
+            let imageUrl = null;
+
+            if (file) {
+                try {
+                    const storageRef = storage.ref('posts/' + file.name);
+                    await storageRef.put(file);
+                    imageUrl = await storageRef.getDownloadURL();
+                } catch (error) {
+                    showModal('Erro ao enviar a imagem: ' + error.message);
+                    return; // Interrompe a execução caso ocorra um erro
+                }
+            }
+
+            const postId = database.ref().child('posts').push().key;
+            try {
+                await database.ref('posts/' + postId).set({
+                    content: content,
+                    imageUrl: imageUrl,
+                    likes: 0,
+                    comments: [],
+                    timestamp: new Date().toISOString()
+                });
+                showModal('Publicado com sucesso!');
+                document.getElementById('postContent').value = ""; // Limpa o campo de texto
+                fileInput.value = ""; // Limpa o campo de arquivo
+                document.getElementById('preview').innerHTML = ""; // Limpa a pré-visualização
+            } catch (error) {
+                showModal('Erro ao publicar a atividade: ' + error.message);
+            }
+
+            loadPosts(); // Recarrega os posts após a publicação
+        }
+
+        // Curtir publicação
+        function likePost(postId) {
+            const postRef = database.ref('posts/' + postId + '/likes');
+            postRef.transaction(likes => (likes || 0) + 1);
+        }
+
+        // Adicionar comentário
+        function addComment(postId) {
+            const commentInput = document.getElementById(`commentInput_${postId}`);
+            const comment = commentInput.value;
+            if (comment.trim() === "") {
+                showModal('Por favor, digite um comentário.');
+                return;
+            }
+            const commentsRef = database.ref(`posts/${postId}/comments`);
+            commentsRef.push(comment);
+            commentInput.value = ""; // Limpa o campo de comentário
+        }
+
+        // Carregar publicações
+        function loadPosts() {
+            database.ref('posts').on('value', function(snapshot) {
+                const postsContainer = document.getElementById('posts');
+                postsContainer.innerHTML = "";
+                snapshot.forEach(function(childSnapshot) {
+                    const post = childSnapshot.val();
+                    const postId = childSnapshot.key;
+                    const postElement = document.createElement('div');
+                    postElement.className = 'post';
+                    postElement.innerHTML = `
+                        <div class="post-header">
+                            <span>Usuário: <strong>@Luan_Silva</strong></span>
+                        </div>
+                        <p>${post.content}</p>
+                        ${post.imageUrl ? `<img src="${post.imageUrl}" alt="Atividade">` : ""}
+                        <div class="actions">
+                            <button class="action-btn" onclick="likePost('${postId}')">❤️ Curtir (${post.likes || 0})</button>
+                            <button class="action-btn" onclick="document.getElementById('commentSection_${postId}').style.display='block'">💬 Comentar</button>
+                        </div>
+                        <div class="comment-section" id="commentSection_${postId}" style="display:none;">
+                            <textarea id="commentInput_${postId}" placeholder="Digite seu comentário..."></textarea>
+                            <button onclick="addComment('${postId}')">Enviar Comentário</button>
+                            ${post.comments ? post.comments.map(comment => `<div class="comment">${comment}</div>`).join('') : ''}
+                        </div>
+                    `;
+                    postsContainer.appendChild(postElement);
+                });
+            });
+        }
+
+        // Carregar posts ao iniciar
+        loadPosts();
+    </script>
+</body>
+</html>
